@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificador de acceso</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f4; }
+    h1 { color: #333; }
+    form { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 2px 5px rgba(0,0,0,0.2); max-width: 400px; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; }
+    button { background: #0078d7; color: white; border: none; cursor: pointer; }
+    button:hover { background: #005a9e; }
+    #resultado { margin-top: 20px; font-weight: bold; }
+    #btnSalida { display: none; background: #d9534f; }
+    #btnSalida:hover { background: #c9302c; }
+    #btnSalida:disabled { background: #aaa; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <h1>Verificador de acceso</h1>
+  
+  //se crea formulario.
+  <form id="formAcceso">
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario" required>
+    
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" required>
+    
+    <button type="submit">Verificar</button>
+  </form>
+  
+  <button id="btnSalida">Registrar salida</button>
+  
+  <div id="resultado"></div>
+  
+  <script>
+    const usuariosPermitidos = ["admin", "rubén", "invitado"];
+    let accesoPermitido = false; // bandera para saber si se permitió el acceso
+
+    function formatoFecha(fecha) {
+      const dia = fecha.getDate().toString().padStart(2, "0");
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+      const año = fecha.getFullYear();
+      const hora = fecha.getHours().toString().padStart(2, "0");
+      const minutos = fecha.getMinutes().toString().padStart(2, "0");
+      return `${dia}/${mes}/${año} ${hora}:${minutos}`;
+    }
+
+    function verificarAcceso(usuarioIngresado, edad) {
+      const ahora = new Date();
+      const hora = ahora.getHours();
+
+      if (usuariosPermitidos.includes(usuarioIngresado)) {
+        if (hora >= 17 && hora < 19) {
+          accesoPermitido = true;
+          return `✅ Bienvenido, ingreso a las ${formatoFecha(ahora)}`;
+        } else {
+          accesoPermitido = false;
+          return "❌ Fuera de rango horario: 17:00-19:00";
+        }
+      } else {
+        if (edad >= 18) {
+          accesoPermitido = true;
+          return `✅ Bienvenido, ingreso a las ${formatoFecha(ahora)} (mayor de edad)`;
+        } else {
+          accesoPermitido = false;
+          return "❌ Acceso denegado (menor de edad y no autorizado)";
+        }
+      }
+    }
+
+    document.getElementById("formAcceso").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const usuario = document.getElementById("usuario").value.trim();
+      const edad = parseInt(document.getElementById("edad").value, 10);
+      const resultado = verificarAcceso(usuario, edad);
+
+      document.getElementById("resultado").textContent = resultado;
+
+      // Mostrar botón de salida solo si el acceso fue permitido
+      const btnSalida = document.getElementById("btnSalida");
+      btnSalida.style.display = accesoPermitido ? "block" : "none";
+      btnSalida.disabled = false; // habilitarlo si se permite acceso
+    });
+
+    document.getElementById("btnSalida").addEventListener("click", function() {
+      if (accesoPermitido) {
+        const horaSalida = parseInt(prompt("Ingrese la hora de salida (0-23):"), 10);
+        const salida = new Date();
+        salida.setHours(horaSalida);
+
+        if (horaSalida >= 3 && horaSalida < 5) {
+          document.getElementById("resultado").textContent += 
+            ` | 👋 Descanse, salida registrada a las ${formatoFecha(salida)} (salida permitida)`;
+        } else {
+          document.getElementById("resultado").textContent += 
+            ` | 🚫 Salida fuera de rango (solo permitido entre 03:00-05:00)`;
+        }
+
+        // Deshabilitar el botón de salida después de usarlo
+        this.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
