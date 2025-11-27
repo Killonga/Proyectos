@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Validación de formulario</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #dcdcdc; /* gris claro */
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+      max-width: 400px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005a9e;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Validación de datos</h1>
+
+  <form id="formAcceso">
+    <label for="nombre">Nombre completo:</label>
+    <input type="text" id="nombre">
+
+    <label for="correo">Correo electrónico:</label>
+    <input type="email" id="correo">
+
+    <label for="contraseña">Contraseña:</label>
+    <input type="password" id="contraseña">
+
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario">
+
+    <button type="submit">Verificar</button>
+  </form>
+
+  <div id="resultado"></div>
+
+  <script>
+    document.getElementById("formAcceso").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById("nombre").value.trim();
+      const correo = document.getElementById("correo").value.trim();
+      const contraseña = document.getElementById("contraseña").value.trim();
+      const usuario = document.getElementById("usuario").value.trim();
+
+      let mensaje = "";
+
+      // Validaciones con if / else if / else
+      if (nombre === "" || correo === "" || contraseña === "" || usuario === "") {
+        mensaje = "❌ Error: Todos los campos son obligatorios.";
+      } else if (contraseña.length < 8) {
+        mensaje = "❌ Error: La contraseña debe tener al menos 8 caracteres.";
+      } else {
+        mensaje = `✅ Registro exitoso. Bienvenido ${nombre} (${usuario}) | Correo: ${correo}`;
+      }
+
+      // Mostrar en pantalla
+      document.getElementById("resultado").textContent = mensaje;
+
+      // Salida adicional en consola
+      console.log("=== Datos ingresados ===");
+      console.log("Nombre completo:", nombre);
+      console.log("Correo electrónico:", correo);
+      console.log("Usuario:", usuario);
+      console.log("Contraseña:", contraseña);
+      console.log("Resultado:", mensaje);
+    });
+  </script>
+</body>
+</html>
